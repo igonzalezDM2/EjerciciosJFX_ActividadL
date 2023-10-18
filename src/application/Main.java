@@ -3,6 +3,7 @@ package application;
 import dao.DAOSeguridad;
 import excepciones.AeropuertosException;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -16,17 +17,21 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
+	private boolean detener = false;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			pantallaLogin();
-			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("Aeropuertos.fxml"));
-			Scene scene = new Scene(root,400,400);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			if (!detener) {
+				BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("/fxml/Aeropuertos.fxml"));
+				Scene scene = new Scene(root);
+				primaryStage.setScene(scene);
+				primaryStage.show();
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
+			Platform.exit();
 		}
 	}
 	
@@ -71,6 +76,7 @@ public class Main extends Application {
 				System.err.println("CONTRASEÑA INCORRECTA");
 			}
 		});
+		loginStage.setOnCloseRequest(e -> detener = true);
 		loginStage.showAndWait();
 	}
 	
