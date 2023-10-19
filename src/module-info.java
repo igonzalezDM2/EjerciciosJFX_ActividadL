@@ -3,6 +3,7 @@ module EjerciciosJFX_ActividadL {
 	requires org.kordamp.ikonli.fontawesome5;
 	requires waffle.jna;
 	requires java.sql;
+	requires javafx.base;
 	requires javafx.controls;
 	requires java.desktop;
 	requires javafx.web;
@@ -12,4 +13,5 @@ module EjerciciosJFX_ActividadL {
 	requires javafx.graphics;
 	opens application to javafx.graphics, javafx.fxml;
 	opens controller to javafx.graphics, javafx.fxml;
+	opens model to javafx.base;
 }

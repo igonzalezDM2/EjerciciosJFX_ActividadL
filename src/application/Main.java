@@ -40,13 +40,15 @@ public class Main extends Application {
 		GridPane gpLogin = new GridPane(10, 20);
 		Label labelUser = new Label("Usuario");
 		GridPane.setColumnIndex(labelUser, 0);
+		GridPane.setRowIndex(labelUser, 0);
 		TextField tfUser = new TextField();
 		tfUser.setId("tfUser");
 		GridPane.setColumnIndex(tfUser, 1);
+		GridPane.setRowIndex(tfUser, 0);
 
 		Label labelPass = new Label("Contraseña");
-		GridPane.setColumnIndex(labelUser, 0);
-		GridPane.setRowIndex(labelUser, 1);
+		GridPane.setColumnIndex(labelPass, 0);
+		GridPane.setRowIndex(labelPass, 1);
 		TextField tfPass = new TextField();
 		tfUser.setId("tfPass");
 		GridPane.setColumnIndex(tfPass, 1);
@@ -58,7 +60,7 @@ public class Main extends Application {
 		GridPane.setColumnSpan(btnLogin, 2);
 		GridPane.setHalignment(btnLogin, HPos.CENTER);
 		
-		gpLogin.getChildren().addAll(labelUser, tfUser, labelPass, tfPass, btnLogin);
+		gpLogin.getChildren().addAll(labelUser, btnLogin, labelPass, tfUser, tfPass);
 		gpLogin.setAlignment(Pos.CENTER);
 		
 		BorderPane loginPane = new BorderPane();

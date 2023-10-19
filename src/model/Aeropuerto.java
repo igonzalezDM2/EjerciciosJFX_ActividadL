@@ -1,5 +1,7 @@
 package model;
 
+import enums.TipoAeropuerto;
+
 public class Aeropuerto {
 	private int id;
 	private String nombre;
@@ -9,7 +11,7 @@ public class Aeropuerto {
 	private byte[] imagen;
 	
 	//PROPIEDADES AJENAS A LA TABLA PRINCIPAL
-	private boolean privado;
+	private TipoAeropuerto tipo;
 	private int numeroSocios;
 	private double financiacion;
 	private int numTrabajadores;
@@ -60,12 +62,11 @@ public class Aeropuerto {
 		return this;
 	}
 	
-	
-	public boolean isPrivado() {
-		return privado;
+	public TipoAeropuerto getTipo() {
+		return tipo;
 	}
-	public Aeropuerto setPrivado(boolean privado) {
-		this.privado = privado;
+	public Aeropuerto setTipo(TipoAeropuerto tipo) {
+		this.tipo = tipo;
 		return this;
 	}
 	/**
