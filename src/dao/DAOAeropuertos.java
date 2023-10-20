@@ -1,6 +1,7 @@
 package dao;
 
 import java.io.ByteArrayInputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -80,7 +81,7 @@ public class DAOAeropuertos extends DAOBase{
 				Direccion direccion = aeropuerto.getDireccion();
 				
 				//PRIMERO SE INSERTA LA DIRECCIÓN Y SE OBTIENE SU ID GENERADO
-				try (PreparedStatement psDireccion = con.prepareStatement(sqlDireccion)) {
+				try (PreparedStatement psDireccion = con.prepareStatement(sqlDireccion, PreparedStatement.RETURN_GENERATED_KEYS)) {
 					psDireccion.setString(1, direccion.getPais());
 					psDireccion.setString(2, direccion.getCiudad());
 					psDireccion.setString(3, direccion.getCalle());
@@ -95,15 +96,18 @@ public class DAOAeropuertos extends DAOBase{
 				
 				//SI LA DIRECCIÓN HA GENERADO UN ID, SE INSERTA EL AEROPUERTO
 				if (idDireccion > 0) {
-					try (PreparedStatement psAeropuerto = con.prepareStatement(sqlAeropuerto)) {
+					try (PreparedStatement psAeropuerto = con.prepareStatement(sqlAeropuerto, PreparedStatement.RETURN_GENERATED_KEYS)) {
 						psAeropuerto.setString(1, aeropuerto.getNombre());
 						psAeropuerto.setInt(2, aeropuerto.getAnioInauguracion());
 						psAeropuerto.setInt(3, aeropuerto.getCapacidad());
 						psAeropuerto.setInt(4, idDireccion);
 						if (aeropuerto.getImagen() != null) {							
 							psAeropuerto.setBlob(5, new ByteArrayInputStream(aeropuerto.getImagen()));
+						} else {
+							psAeropuerto.setBlob(5, (Blob) null);
 						}
 						psAeropuerto.executeUpdate();
+						
 						ResultSet rs = psAeropuerto.getGeneratedKeys();
 						if (rs.next()) {
 							idAeropuerto = rs.getInt(1);
@@ -115,14 +119,14 @@ public class DAOAeropuertos extends DAOBase{
 				//SI HA CREADO EL AEROPUERTO, SE CREA AEROPUERTO PÚBLICO O PRIVADO (O NINGUNO)
 				if (idAeropuerto > 0) {
 					if (TipoAeropuerto.PUBLICO.equals(tipo)) {
-						try (PreparedStatement ps = con.prepareStatement(sqlAeropuertoPublico)) {
+						try (PreparedStatement ps = con.prepareStatement(sqlAeropuertoPublico, PreparedStatement.RETURN_GENERATED_KEYS)) {
 							ps.setInt(1, idAeropuerto);
 							ps.setDouble(2, aeropuerto.getFinanciacion());
 							ps.setInt(3, aeropuerto.getNumTrabajadores());
 							ps.executeUpdate();
 						}
 					} else if (TipoAeropuerto.PRIVADO.equals(tipo)) {
-						try (PreparedStatement ps = con.prepareStatement(sqlAeropuertoPrivado)) {
+						try (PreparedStatement ps = con.prepareStatement(sqlAeropuertoPrivado, PreparedStatement.RETURN_GENERATED_KEYS)) {
 							ps.setInt(1, idAeropuerto);
 							ps.setInt(2, aeropuerto.getNumeroSocios());
 							ps.executeUpdate();

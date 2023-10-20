@@ -9,24 +9,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dao.DAOAeropuertos;
+import enums.TipoAeropuerto;
 import excepciones.AeropuertosException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.Aeropuerto;
 import model.Direccion;
 
 public class AnadirAeropuertoController implements Initializable {
 
+	private TableView<Aeropuerto> tablaAeropuertos;
 
     @FXML
     private Button btnCancelar;
@@ -91,7 +96,12 @@ public class AnadirAeropuertoController implements Initializable {
 			Aeropuerto aeropuerto = construirAeropuerto();
 			DAOAeropuertos.anadirAeropuerto(aeropuerto);
 			//TODO: AVISAR DE QUE SE HA INSERTADO Y CERRAR LA MODAL
-			
+			Alert alert = new Alert(AlertType.INFORMATION, "El aeropuerto fue insertado", ButtonType.OK);
+			alert.show();
+			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			stage.close();
+			tablaAeropuertos.getItems().add(aeropuerto);
+			tablaAeropuertos.refresh();
 		} catch (AeropuertosException e) {
     		Alert alert = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
     		alert.showAndWait();
@@ -115,6 +125,11 @@ public class AnadirAeropuertoController implements Initializable {
 				tfVariable2.setVisible(true);
 			}
 		});
+	}
+	
+	public AnadirAeropuertoController setTablaAeropuertos(TableView<Aeropuerto> tabla) {
+		this.tablaAeropuertos = tabla;
+		return this;
 	}
 	
 	private void comprobarDatos() throws AeropuertosException {
@@ -145,8 +160,10 @@ public class AnadirAeropuertoController implements Initializable {
 				.setAnioInauguracion(parseInt(tfAno.getText()))
 				.setCapacidad(parseInt(tfCapacidad.getText()));
 		if (rbPrivado.isSelected()) {
+			aeropuerto.setTipo(TipoAeropuerto.PRIVADO);
 			aeropuerto.setNumeroSocios(parseInt(tfVariable1.getText()));
 		} else {
+			aeropuerto.setTipo(TipoAeropuerto.PUBLICO);
 			aeropuerto.setFinanciacion(parseDouble(tfVariable1.getText()));
 			aeropuerto.setNumTrabajadores(parseInt(tfVariable2.getText()));
 		}

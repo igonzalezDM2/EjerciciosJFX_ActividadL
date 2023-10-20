@@ -161,7 +161,10 @@ public class AeropuertosController implements Initializable {
 	private void abrirEditor() {
 		FlowPane root;
 		try {
-			root = (FlowPane)FXMLLoader.load(getClass().getResource("/fxml/AnadirAeropuerto.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AnadirAeropuerto.fxml"));
+			root = loader.load();
+			AnadirAeropuertoController controladorAnadirAeropuerto = loader.getController();
+			controladorAnadirAeropuerto.setTablaAeropuertos(tvAeropuertos);
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
