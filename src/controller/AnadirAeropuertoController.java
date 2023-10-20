@@ -4,6 +4,7 @@ import static utilities.Utilidades.parseDouble;
 import static utilities.Utilidades.parseInt;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +33,8 @@ import model.Direccion;
 public class AnadirAeropuertoController implements Initializable {
 
 	private TableView<Aeropuerto> tablaAeropuertos;
+	private Aeropuerto seleccionado;
+	private AeropuertosController controladorPrincipal;
 
     @FXML
     private Button btnCancelar;
@@ -93,18 +96,25 @@ public class AnadirAeropuertoController implements Initializable {
     void guardar(ActionEvent event) {
     	try {
 			comprobarDatos();
-			Aeropuerto aeropuerto = construirAeropuerto();
-			DAOAeropuertos.anadirAeropuerto(aeropuerto);
+			if (seleccionado != null) {				
+				DAOAeropuertos.modificarAeropuerto(construirAeropuerto());
+			} else {
+				DAOAeropuertos.anadirAeropuerto(construirAeropuerto());
+			}
 			//TODO: AVISAR DE QUE SE HA INSERTADO Y CERRAR LA MODAL
 			Alert alert = new Alert(AlertType.INFORMATION, "El aeropuerto fue insertado", ButtonType.OK);
 			alert.show();
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			stage.close();
-			tablaAeropuertos.getItems().add(aeropuerto);
-			tablaAeropuertos.refresh();
+			controladorPrincipal.filtrarFilas();
 		} catch (AeropuertosException e) {
     		Alert alert = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
     		alert.showAndWait();
+    		e.printStackTrace();
+		} catch (SQLException e) {
+			Alert alert = new Alert(AlertType.ERROR, "La conexión con la BD no se pudo cerrar", ButtonType.OK);
+    		alert.showAndWait();
+    		e.printStackTrace();
 		}
     }
 
@@ -129,6 +139,17 @@ public class AnadirAeropuertoController implements Initializable {
 	
 	public AnadirAeropuertoController setTablaAeropuertos(TableView<Aeropuerto> tabla) {
 		this.tablaAeropuertos = tabla;
+		return this;
+	}
+
+	public AnadirAeropuertoController setControladorPrincipal(AeropuertosController controladorPrincipal) {
+		this.controladorPrincipal = controladorPrincipal;
+		return this;
+	}
+	
+	public AnadirAeropuertoController setSeleccionado(Aeropuerto seleccionado) {
+		this.seleccionado = seleccionado;
+		rellenarEdicion();
 		return this;
 	}
 	
@@ -167,13 +188,19 @@ public class AnadirAeropuertoController implements Initializable {
 			aeropuerto.setFinanciacion(parseDouble(tfVariable1.getText()));
 			aeropuerto.setNumTrabajadores(parseInt(tfVariable2.getText()));
 		}
+		
+		if (seleccionado != null) {
+			aeropuerto.setId(seleccionado.getId());
+			aeropuerto.getDireccion().setId(seleccionado.getDireccion().getId());
+		}
+		
 		return aeropuerto;
 	}
 	
 	
 	private void checkCampoDouble(TextField tf) throws AeropuertosException {
 		String strNum = tf.getText();
-		Pattern doublePattern = Pattern.compile("\\d+(\\.\\d+)?");
+		Pattern doublePattern = Pattern.compile("\\d+([\\.,]\\d+)?");
 		Matcher matcher = doublePattern.matcher(strNum);
 		if (!matcher.matches()) {
 			throw new AeropuertosException("El campo " + tf.getId() + " contiene un formato incorrecto o está vacío");
@@ -193,6 +220,28 @@ public class AnadirAeropuertoController implements Initializable {
 		String str = tf.getText();
 		if (str == null || str.isBlank()) {
 			throw new AeropuertosException("El campo" + tf.getId() + " está vacío");
+		}
+	}
+	
+	private void rellenarEdicion() {
+		//PRÁCTICAMENTE TODOS LOS CAMPOS SON NOT NULL, POR LO QUE NO DEBERÍA SALTAR NINGUNA EXCEPCIÓN
+		if (seleccionado != null) {
+			Direccion direccion = seleccionado.getDireccion();
+			tfAno.setText(Integer.toString(seleccionado.getAnioInauguracion()));
+			tfCalle.setText(direccion.getCalle());
+			tfCapacidad.setText(Integer.toString(seleccionado.getCapacidad()));
+			tfCiudad.setText(direccion.getCiudad());
+			tfNombre.setText(seleccionado.getNombre());
+			tfNumero.setText(Integer.toString(direccion.getNumero()));
+			tfPais.setText(direccion.getPais());
+			rbPrivado.setDisable(true);
+			rbPublico.setDisable(true);
+			if (rbPrivado.isSelected()) {
+				tfVariable1.setText(Integer.toString(seleccionado.getNumeroSocios()));
+			} else {
+				tfVariable1.setText(String.format("%.2f", seleccionado.getFinanciacion()));
+				tfVariable2.setText(Integer.toString(seleccionado.getNumTrabajadores()));
+			}
 		}
 	}
 

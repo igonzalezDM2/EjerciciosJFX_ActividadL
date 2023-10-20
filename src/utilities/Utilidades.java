@@ -2,10 +2,12 @@ package utilities;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import enums.TipoAeropuerto;
 import excepciones.AeropuertosException;
 import model.Aeropuerto;
+import model.Avion;
 import model.Direccion;
 
 public class Utilidades {
@@ -47,7 +49,7 @@ public class Utilidades {
 	public static double parseDouble(String str) throws AeropuertosException {
 		if (str != null && !str.isBlank()) {
 			try {
-				return Double.parseDouble(str);
+				return Double.parseDouble(str.replace(',', '.'));
 			} catch (NumberFormatException e) {/*QUE SALTE A LA EXCEPCIÓN*/}
 		}
 		throw new AeropuertosException("Formato de número decimal incorrecto");
@@ -60,6 +62,34 @@ public class Utilidades {
 			} catch (NumberFormatException e) {/*QUE SALTE A LA EXCEPCIÓN*/}
 		}
 		throw new AeropuertosException("Formato de número entero incorrecto");
+	}
+	
+	public static String infoAeropuerto(Aeropuerto aeropuerto, List<Avion> aviones) {
+		Direccion direccion = aeropuerto.getDireccion();
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("Nombre: %s\n", aeropuerto.getNombre()));
+		sb.append(String.format("País: %s\n", direccion.getPais()));
+		sb.append(String.format("Dirección: %s\n", direccion.getCalle()));
+		sb.append(String.format("Año de inauguración: %d\n", aeropuerto.getAnioInauguracion()));
+		sb.append(String.format("Capacidad: %d\n", aeropuerto.getCapacidad()));
+		sb.append("Aviones:\n");
+		for (Avion avion : aviones) {
+			sb.append(String.format("\tModelo: %s\n", avion.getModelo()));			
+			sb.append(String.format("\tNúmero de asientos: %d\n", avion.getNumeroAsientos()));			
+			sb.append(String.format("\tVelocidad máxima: %d\n", avion.getVelocidadMaxima()));			
+			sb.append(avion.isActivado() ? "\tActivado\n" : "\tDesactivado\n");	
+			sb.append("\n");	
+		}
+		TipoAeropuerto tipo = aeropuerto.getTipo();
+		sb.append(tipo);
+		if (TipoAeropuerto.PUBLICO.equals(tipo)){
+			sb.append(String.format("Financiación: %d\n", aeropuerto.getFinanciacion()));			
+			sb.append(String.format("Número de trabajadores: %d\n", aeropuerto.getNumTrabajadores()));			
+		} else if (TipoAeropuerto.PRIVADO.equals(tipo)) {
+			sb.append(String.format("Número de socios: %d\n", aeropuerto.getNumeroSocios()));						
+		}
+
+		return sb.toString();
 	}
 	
 }

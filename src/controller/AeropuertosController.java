@@ -23,6 +23,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Aeropuerto;
 import model.Direccion;
@@ -97,7 +98,10 @@ public class AeropuertosController implements Initializable {
 
     @FXML
     void editarAeropuerto(ActionEvent event) {
-//    	abrirEditor();
+    	Aeropuerto seleccionado = tvAeropuertos.getSelectionModel().getSelectedItem();
+    	if (seleccionado != null) {    		
+    		abrirEditor(seleccionado);
+    	}
     }
 
     @FXML
@@ -147,25 +151,34 @@ public class AeropuertosController implements Initializable {
 		
 	}
 
-	private void filtrarFilas() {
+	protected void filtrarFilas() {
 		String busqueda = tfNombre.getText() != null ? tfNombre.getText().toLowerCase() : "";
 		tvAeropuertos.getItems().clear();
 		TipoAeropuerto tipo = rbPrivados == tipoAeropuerto.getSelectedToggle() ? TipoAeropuerto.PRIVADO : TipoAeropuerto.PUBLICO;
 		try {
 			tvAeropuertos.getItems().addAll(DAOAeropuertos.getAeropuertos(tipo, busqueda));
+			tvAeropuertos.refresh();
 		} catch (AeropuertosException e) {
 			e.printStackTrace();
 		}
 	}
-	
 	private void abrirEditor() {
+		abrirEditor(null);
+	}
+	private void abrirEditor(Aeropuerto seleccionado) {
 		FlowPane root;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AnadirAeropuerto.fxml"));
 			root = loader.load();
 			AnadirAeropuertoController controladorAnadirAeropuerto = loader.getController();
-			controladorAnadirAeropuerto.setTablaAeropuertos(tvAeropuertos);
+			
+			controladorAnadirAeropuerto
+			.setTablaAeropuertos(tvAeropuertos)
+			.setSeleccionado(seleccionado)
+			.setControladorPrincipal(this);
+			
 			Stage stage = new Stage();
+			stage.initModality(Modality.WINDOW_MODAL);
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.showAndWait();

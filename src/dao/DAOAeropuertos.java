@@ -66,7 +66,7 @@ public class DAOAeropuertos extends DAOBase{
 		return getAeropuertos(tipo, null);
 	}
 	
-	public static void anadirAeropuerto(Aeropuerto aeropuerto) throws AeropuertosException {
+	public static void anadirAeropuerto(Aeropuerto aeropuerto) throws AeropuertosException, SQLException {
 		if (aeropuerto != null && aeropuerto.getDireccion() != null) {
 			TipoAeropuerto tipo = aeropuerto.getTipo();
 			
@@ -77,7 +77,10 @@ public class DAOAeropuertos extends DAOBase{
 			
 			int idDireccion = 0;
 			int idAeropuerto = 0;
-			try (Connection con = getConexion()) {
+			Connection con = null;
+			try {
+				con = getConexion();
+				con.setAutoCommit(false);
 				Direccion direccion = aeropuerto.getDireccion();
 				
 				//PRIMERO SE INSERTA LA DIRECCIÓN Y SE OBTIENE SU ID GENERADO
@@ -135,14 +138,98 @@ public class DAOAeropuertos extends DAOBase{
 				} else {
 					throw new AeropuertosException("No se pudo insertar el aeropuerto");					
 				}
-				
+				con.commit();
 			} catch (SQLException e) {
+				e.printStackTrace();
+				//ME PROTEJO EN CASO DE QUE UNA DE LAS INSERTS/UPDATES SALGA MAL, DESHACIENDO TODA LA TRANSACCIÓN
+				con.rollback();
 				throw new AeropuertosException(e);
+			} finally {
+				con.close();
 			}
 			
 			//INSERTAR LOS IDS GENERADOS EN EL OBJETO PASADO COMO ARGUMENTO
 			aeropuerto.getDireccion().setId(idDireccion);
 			aeropuerto.setId(idAeropuerto);
+			
+		} else {			
+			throw new AeropuertosException("Los datos introducidos están incompletos");
+		}
+	}
+	
+	public static void modificarAeropuerto(Aeropuerto aeropuerto) throws AeropuertosException, SQLException {
+		if (aeropuerto != null && aeropuerto.getDireccion() != null) {
+			TipoAeropuerto tipo = aeropuerto.getTipo();
+			
+			String sqlDireccion = "UPDATE direcciones SET pais = ?, ciudad = ?, calle = ?, numero = ? WHERE id = ?";
+			String sqlAeropuerto = "UPDATE aeropuertos SET nombre = ?, anio_inauguracion = ?, capacidad = ?, id_direccion = ?, imagen = ? WHERE id = ?";
+			String sqlAeropuertoPrivado = "UPDATE aeropuertos_privados SET numero_socios = ? WHERE id_aeropuerto = ?";
+			String sqlAeropuertoPublico = "UPDATE aeropuertos_publicos SET financiacion = ?, num_trabajadores = ? WHERE id_aeropuerto = ?";
+			
+			int idDireccion = aeropuerto.getDireccion().getId();
+			int idAeropuerto = aeropuerto.getId();
+			Connection con = null;
+			try {
+				con = getConexion();
+				con.setAutoCommit(false);
+				Direccion direccion = aeropuerto.getDireccion();
+				
+				try (PreparedStatement psDireccion = con.prepareStatement(sqlDireccion)) {
+					psDireccion.setString(1, direccion.getPais());
+					psDireccion.setString(2, direccion.getCiudad());
+					psDireccion.setString(3, direccion.getCalle());
+					psDireccion.setInt(4, direccion.getNumero());
+					psDireccion.setInt(5, direccion.getId());
+					
+					psDireccion.executeUpdate();
+				}
+				
+				if (idDireccion > 0) {
+					try (PreparedStatement psAeropuerto = con.prepareStatement(sqlAeropuerto)) {
+						psAeropuerto.setString(1, aeropuerto.getNombre());
+						psAeropuerto.setInt(2, aeropuerto.getAnioInauguracion());
+						psAeropuerto.setInt(3, aeropuerto.getCapacidad());
+						psAeropuerto.setInt(4, idDireccion);
+						if (aeropuerto.getImagen() != null) {							
+							psAeropuerto.setBlob(5, new ByteArrayInputStream(aeropuerto.getImagen()));
+						} else {
+							psAeropuerto.setBlob(5, (Blob) null);
+						}
+						psAeropuerto.setInt(6, aeropuerto.getId());
+						
+						psAeropuerto.executeUpdate();
+					}
+				} else {
+					throw new AeropuertosException("No se pudo actualizar la dirección");
+				}
+				//SI HA CREADO EL AEROPUERTO, SE CREA AEROPUERTO PÚBLICO O PRIVADO (O NINGUNO)
+				if (idAeropuerto > 0) {
+					if (TipoAeropuerto.PUBLICO.equals(tipo)) {
+						try (PreparedStatement ps = con.prepareStatement(sqlAeropuertoPublico)) {
+							ps.setDouble(1, aeropuerto.getFinanciacion());
+							ps.setInt(2, aeropuerto.getNumTrabajadores());
+							ps.setInt(3, idAeropuerto);
+							ps.executeUpdate();
+						}
+					} else if (TipoAeropuerto.PRIVADO.equals(tipo)) {
+						try (PreparedStatement ps = con.prepareStatement(sqlAeropuertoPrivado)) {
+							ps.setInt(1, aeropuerto.getNumeroSocios());
+							ps.setInt(2, idAeropuerto);
+							ps.executeUpdate();
+						}						
+					}
+				} else {
+					throw new AeropuertosException("No se pudo actualizar el aeropuerto");					
+				}
+				con.commit();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				//ME PROTEJO EN CASO DE QUE UNA DE LAS INSERTS/UPDATES SALGA MAL, DESHACIENDO TODA LA TRANSACCIÓN
+				con.rollback();
+				throw new AeropuertosException(e);
+			} finally {
+				con.close();
+			}
 			
 		} else {			
 			throw new AeropuertosException("Los datos introducidos están incompletos");
