@@ -44,4 +44,22 @@ public class Utilidades {
 		}
 	}
 	
+	public static double parseDouble(String str) throws AeropuertosException {
+		if (str != null && !str.isBlank()) {
+			try {
+				return Double.parseDouble(str);
+			} catch (NumberFormatException e) {/*QUE SALTE A LA EXCEPCIÓN*/}
+		}
+		throw new AeropuertosException("Formato de número decimal incorrecto");
+	}
+	
+	public static int parseInt(String str) throws AeropuertosException {
+		if (str != null && !str.isBlank()) {
+			try {
+				return Integer.parseInt(str);
+			} catch (NumberFormatException e) {/*QUE SALTE A LA EXCEPCIÓN*/}
+		}
+		throw new AeropuertosException("Formato de número entero incorrecto");
+	}
+	
 }
