@@ -13,6 +13,7 @@ import java.util.List;
 import enums.TipoAeropuerto;
 import excepciones.AeropuertosException;
 import model.Aeropuerto;
+import model.Avion;
 import model.Direccion;
 import utilities.Utilidades;
 
@@ -64,6 +65,36 @@ public class DAOAeropuertos extends DAOBase{
 	
 	public static List<Aeropuerto> getAeropuertos(TipoAeropuerto tipo) throws AeropuertosException {
 		return getAeropuertos(tipo, null);
+	}
+	
+	public static List<Avion> getAviones(Aeropuerto aeropuerto) throws AeropuertosException {
+		try(Connection con = getConexion()) {
+			StringBuilder sb = new StringBuilder("select aeropuertos.id as id, "
+					+ "aviones.id as id, "
+					+ "aviones.modelo as modelo, "
+					+ "aviones.numero_asientos as numero_asientos, "
+					+ "aviones.velocidad_maxima as velocidad_maxima, "
+					+ "aviones.activado as activado, "
+					+ "aviones.id_aeropuerto as id_aeropuerto "
+					+ "from aviones\n"
+					+ "inner join aeropuertos on aeropuertos.id = aviones.id_aeropuerto\n"
+					+ String.format("where aeropuertos.id = %d", aeropuerto.getId()));
+			
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(sb.toString());
+			
+			List<Avion> aviones = new LinkedList<>(); 
+			
+			while(rs.next()) {
+				aviones.add(Utilidades.mapAvion(rs, aeropuerto));
+			}
+			
+			return aviones;
+			
+		} catch (SQLException e) {
+			throw new AeropuertosException(e);
+		}
+		
 	}
 	
 	public static void anadirAeropuerto(Aeropuerto aeropuerto) throws AeropuertosException, SQLException {

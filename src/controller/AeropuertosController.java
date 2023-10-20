@@ -14,12 +14,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
@@ -27,6 +30,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Aeropuerto;
 import model.Direccion;
+import utilities.Utilidades;
 
 public class AeropuertosController implements Initializable {
 
@@ -41,6 +45,9 @@ public class AeropuertosController implements Initializable {
 
     @FXML
     private MenuItem miEditarAvion;
+    
+    @FXML
+    private MenuItem miInfoAeropuertos;
 
     @FXML
     private RadioButton rbPrivados;
@@ -107,6 +114,21 @@ public class AeropuertosController implements Initializable {
     @FXML
     void editarAvion(ActionEvent event) {
 
+    }
+    
+
+    @FXML
+    void mostrarInfoAeropuerto(ActionEvent event) {
+    	try {    		
+    		Aeropuerto seleccionado = tvAeropuertos.getSelectionModel().getSelectedItem();
+    		if (seleccionado != null) {    		
+    			Alert alert = new Alert(AlertType.INFORMATION, Utilidades.infoAeropuerto(seleccionado, DAOAeropuertos.getAviones(seleccionado)), ButtonType.OK);
+    			alert.showAndWait();
+    		}
+    	} catch (AeropuertosException e) {
+			Alert alert = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
+			alert.showAndWait();
+    	}
     }
 
 	@Override

@@ -46,6 +46,21 @@ public class Utilidades {
 		}
 	}
 	
+	public static Avion mapAvion(ResultSet rs, Aeropuerto aeropuerto) throws AeropuertosException {
+		try {
+			return new Avion()
+					.setActivado(rs.getBoolean("activado"))
+					.setAeropuerto(aeropuerto)
+					.setId(rs.getInt("id"))
+					.setModelo(rs.getString("modelo"))
+					.setNumeroAsientos(rs.getInt("numero_asientos"))
+					.setVelocidadMaxima(rs.getInt("velocidad_maxima"));
+					
+		} catch (SQLException e) {
+			throw new AeropuertosException(e);
+		}
+	}
+	
 	public static double parseDouble(String str) throws AeropuertosException {
 		if (str != null && !str.isBlank()) {
 			try {
@@ -78,12 +93,11 @@ public class Utilidades {
 			sb.append(String.format("\tNúmero de asientos: %d\n", avion.getNumeroAsientos()));			
 			sb.append(String.format("\tVelocidad máxima: %d\n", avion.getVelocidadMaxima()));			
 			sb.append(avion.isActivado() ? "\tActivado\n" : "\tDesactivado\n");	
-			sb.append("\n");	
 		}
 		TipoAeropuerto tipo = aeropuerto.getTipo();
 		sb.append(tipo);
 		if (TipoAeropuerto.PUBLICO.equals(tipo)){
-			sb.append(String.format("Financiación: %d\n", aeropuerto.getFinanciacion()));			
+			sb.append(String.format("Financiación: %,.2f\n", aeropuerto.getFinanciacion()));			
 			sb.append(String.format("Número de trabajadores: %d\n", aeropuerto.getNumTrabajadores()));			
 		} else if (TipoAeropuerto.PRIVADO.equals(tipo)) {
 			sb.append(String.format("Número de socios: %d\n", aeropuerto.getNumeroSocios()));						
