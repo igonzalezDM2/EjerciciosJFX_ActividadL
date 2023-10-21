@@ -16,8 +16,20 @@ import model.Aeropuerto;
 import model.Direccion;
 import utilities.Utilidades;
 
+
+
+/**
+ * La clase DAOAeropuertos extiende DAOBase.
+ */
 public class DAOAeropuertos extends DAOBase{
 	
+	/**
+	 * Obtiene una lista de aeropuertos basada en el tipo y la cadena de búsqueda.
+	 * @param tipo El tipo de aeropuerto.
+	 * @param busqueda La cadena de búsqueda.
+	 * @return Una lista de aeropuertos.
+	 * @throws AeropuertosException Si hay un error al obtener los aeropuertos.
+	 */
 	public static List<Aeropuerto> getAeropuertos(TipoAeropuerto tipo, String busqueda) throws AeropuertosException {
 		try(Connection con = getConexion()) {
 			StringBuilder sb = new StringBuilder("select aeropuertos.id as id, "
@@ -62,10 +74,22 @@ public class DAOAeropuertos extends DAOBase{
 		
 	}
 	
+	/**
+	 * Obtiene una lista de aeropuertos basada en el tipo.
+	 * @param tipo El tipo de aeropuerto.
+	 * @return Una lista de aeropuertos.
+	 * @throws AeropuertosException Si hay un error al obtener los aeropuertos.
+	 */
 	public static List<Aeropuerto> getAeropuertos(TipoAeropuerto tipo) throws AeropuertosException {
 		return getAeropuertos(tipo, null);
 	}
 	
+	/**
+	 * Añade un aeropuerto a la base de datos.
+	 * @param aeropuerto El aeropuerto a añadir.
+	 * @throws AeropuertosException Si hay un error al añadir el aeropuerto.
+	 * @throws SQLException Si hay un error con la base de datos.
+	 */
 	public static void anadirAeropuerto(Aeropuerto aeropuerto) throws AeropuertosException, SQLException {
 		if (aeropuerto != null && aeropuerto.getDireccion() != null) {
 			TipoAeropuerto tipo = aeropuerto.getTipo();
@@ -157,6 +181,12 @@ public class DAOAeropuertos extends DAOBase{
 		}
 	}
 	
+	/**
+	 * Modifica un aeropuerto en la base de datos.
+	 * @param aeropuerto El aeropuerto a modificar.
+	 * @throws AeropuertosException Si hay un error al modificar el aeropuerto.
+	 * @throws SQLException Si hay un error con la base de datos.
+	 */
 	public static void modificarAeropuerto(Aeropuerto aeropuerto) throws AeropuertosException, SQLException {
 		if (aeropuerto != null && aeropuerto.getDireccion() != null) {
 			TipoAeropuerto tipo = aeropuerto.getTipo();
@@ -236,7 +266,12 @@ public class DAOAeropuertos extends DAOBase{
 		}
 	}
 	
-	//BORRANDO SOLO LA DIRECCION DEBERÍA BORRAR LAS FORÁNEAS (LAS REFERENCIAS SON NOT NULL, POR LO QUE SIEMPRE TENDRÁ DIRECCIÓN y DOS AEROPUERTOS NO PUEDEN TENER LA MISMA DIRECCIÓN)
+	/**
+	 * Elimina un aeropuerto de la base de datos.
+	 * @param aeropuerto El aeropuerto a eliminar.
+	 * @throws SQLException Si hay un error con la base de datos.
+	 * @throws AeropuertosException Si hay un error al eliminar el aeropuerto.
+	 */
 	public static void borrarAeropuerto(Aeropuerto aeropuerto) throws SQLException, AeropuertosException {
 		if (aeropuerto == null || aeropuerto.getDireccion() == null || aeropuerto.getDireccion().getId() < 1) {
 			return;

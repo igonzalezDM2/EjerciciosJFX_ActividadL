@@ -7,8 +7,17 @@ import java.sql.SQLException;
 
 import excepciones.AeropuertosException;
 
+/**
+ * La clase DAOSeguridad extiende DAOBase.
+ */
 public class DAOSeguridad extends DAOBase {
 	
+	/**
+	 * Realiza el inicio de sesión del usuario.
+	 * @param user El nombre de usuario.
+	 * @param pass La contraseña del usuario.
+	 * @throws AeropuertosException Si las credenciales son incorrectas o si no se puede realizar la conexión a la base de datos.
+	 */
 	public static void login(String user, String pass) throws AeropuertosException {
 		try (Connection con = getConexion()) {
 			String sql = "SELECT usuario, password FROM usuarios WHERE usuario = ? AND password = ?";

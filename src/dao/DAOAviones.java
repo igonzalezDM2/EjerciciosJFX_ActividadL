@@ -13,8 +13,19 @@ import model.Aeropuerto;
 import model.Avion;
 import utilities.Utilidades;
 
-public class DAOAviones extends DAOBase {
 
+
+/**
+ * La clase DAOAviones extiende DAOBase.
+ */
+public class DAOAviones extends DAOBase {
+	
+	/**
+	 * Obtiene una lista de aviones de un aeropuerto específico.
+	 * @param aeropuerto El aeropuerto del que se obtendrán los aviones.
+	 * @return Una lista de aviones.
+	 * @throws AeropuertosException Si ocurre un error al obtener los aviones.
+	 */
 	public static List<Avion> getAviones(Aeropuerto aeropuerto) throws AeropuertosException {
 		try(Connection con = getConexion()) {
 			StringBuilder sb = new StringBuilder("select aeropuertos.id as id, "
@@ -45,6 +56,12 @@ public class DAOAviones extends DAOBase {
 		
 	}
 	
+	/**
+	 * Añade un avión a la base de datos.
+	 * @param avion El avión que se añadirá.
+	 * @throws AeropuertosException Si los datos del avión son incompletos.
+	 * @throws SQLException Si ocurre un error al añadir el avión.
+	 */
 	public static void anadirAvion(Avion avion) throws AeropuertosException, SQLException {
 		if (avion != null && avion.getAeropuerto() != null && avion.getAeropuerto().getId() > 0) {
 			
@@ -87,6 +104,12 @@ public class DAOAviones extends DAOBase {
 		}
 	}
 	
+	/**
+	 * Modifica un avión en la base de datos.
+	 * @param avion El avión que se modificará.
+	 * @throws AeropuertosException Si los datos del avión son incompletos.
+	 * @throws SQLException Si ocurre un error al modificar el avión.
+	 */
 	public static void modificarAvion(Avion avion) throws AeropuertosException, SQLException {
 		if (avion != null && avion.getId() > 0) {
 			
@@ -114,6 +137,7 @@ public class DAOAviones extends DAOBase {
 				
 				con.commit();
 			} catch (SQLException e) {
+				
 				e.printStackTrace();
 				//ME PROTEJO EN CASO DE QUE UNA DE LAS INSERTS/UPDATES SALGA MAL, DESHACIENDO TODA LA TRANSACCIÓN
 				con.rollback();
@@ -130,6 +154,12 @@ public class DAOAviones extends DAOBase {
 		}
 	}
 	
+	/**
+	 * Borra un avión de la base de datos.
+	 * @param avion El avión que se borrará.
+	 * @throws SQLException Si ocurre un error al borrar el avión.
+	 * @throws AeropuertosException Si el avión es nulo o su ID es inválido.
+	 */
 	public static void borrarAvion(Avion avion) throws SQLException, AeropuertosException {
 		if (avion == null || avion.getId() < 0) {
 			return;
