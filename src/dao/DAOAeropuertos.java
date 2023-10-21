@@ -13,7 +13,6 @@ import java.util.List;
 import enums.TipoAeropuerto;
 import excepciones.AeropuertosException;
 import model.Aeropuerto;
-import model.Avion;
 import model.Direccion;
 import utilities.Utilidades;
 
@@ -65,36 +64,6 @@ public class DAOAeropuertos extends DAOBase{
 	
 	public static List<Aeropuerto> getAeropuertos(TipoAeropuerto tipo) throws AeropuertosException {
 		return getAeropuertos(tipo, null);
-	}
-	
-	public static List<Avion> getAviones(Aeropuerto aeropuerto) throws AeropuertosException {
-		try(Connection con = getConexion()) {
-			StringBuilder sb = new StringBuilder("select aeropuertos.id as id, "
-					+ "aviones.id as id, "
-					+ "aviones.modelo as modelo, "
-					+ "aviones.numero_asientos as numero_asientos, "
-					+ "aviones.velocidad_maxima as velocidad_maxima, "
-					+ "aviones.activado as activado, "
-					+ "aviones.id_aeropuerto as id_aeropuerto "
-					+ "from aviones\n"
-					+ "inner join aeropuertos on aeropuertos.id = aviones.id_aeropuerto\n"
-					+ String.format("where aeropuertos.id = %d", aeropuerto.getId()));
-			
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(sb.toString());
-			
-			List<Avion> aviones = new LinkedList<>(); 
-			
-			while(rs.next()) {
-				aviones.add(Utilidades.mapAvion(rs, aeropuerto));
-			}
-			
-			return aviones;
-			
-		} catch (SQLException e) {
-			throw new AeropuertosException(e);
-		}
-		
 	}
 	
 	public static void anadirAeropuerto(Aeropuerto aeropuerto) throws AeropuertosException, SQLException {
@@ -265,6 +234,29 @@ public class DAOAeropuertos extends DAOBase{
 		} else {			
 			throw new AeropuertosException("Los datos introducidos están incompletos");
 		}
+	}
+	
+	//BORRANDO SOLO LA DIRECCION DEBERÍA BORRAR LAS FORÁNEAS (LAS REFERENCIAS SON NOT NULL, POR LO QUE SIEMPRE TENDRÁ DIRECCIÓN y DOS AEROPUERTOS NO PUEDEN TENER LA MISMA DIRECCIÓN)
+	public static void borrarAeropuerto(Aeropuerto aeropuerto) throws SQLException, AeropuertosException {
+		if (aeropuerto == null || aeropuerto.getDireccion() == null || aeropuerto.getDireccion().getId() < 1) {
+			return;
+		}
+		String sql = "DELETE FROM direcciones WHERE id = ?";
+		Connection con = null;
+		try {
+			con = getConexion();
+			con.setAutoCommit(false);
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, aeropuerto.getDireccion().getId());
+			ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			con.rollback();
+			throw new AeropuertosException(e);
+		} finally {
+			con.close();
+		}
+		
 	}
 	
 	

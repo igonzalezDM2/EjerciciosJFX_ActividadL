@@ -47,8 +47,8 @@
             <TextField fx:id="tfPais" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="tfCiudad" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="tfCalle" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField fx:id="tfAno" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="117.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TextField fx:id="tfNumero" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="117.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="tfAno" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="117.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="tfNumero" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="117.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <TextField fx:id="tfCapacidad" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="117.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <FlowPane alignment="CENTER" hgap="20.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="7">
                <children>

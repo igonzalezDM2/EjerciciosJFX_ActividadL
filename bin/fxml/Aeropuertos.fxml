@@ -25,6 +25,7 @@
             <items>
               <MenuItem fx:id="miAnadirAeropuerto" mnemonicParsing="false" onAction="#anadirAeropuerto" text="Añadir" />
                   <MenuItem fx:id="miEditarAeropuerto" mnemonicParsing="false" onAction="#editarAeropuerto" text="Editar" />
+                  <MenuItem fx:id="miBorrarAeropuerto" mnemonicParsing="false" onAction="#borrarAeropuerto" text="Borrar" />
                   <MenuItem fx:id="miInfoAeropuertos" mnemonicParsing="false" onAction="#mostrarInfoAeropuerto" text="Mostrar información" />
             </items>
           </Menu>

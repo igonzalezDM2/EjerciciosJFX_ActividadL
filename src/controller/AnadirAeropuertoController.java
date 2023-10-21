@@ -89,7 +89,7 @@ public class AnadirAeropuertoController implements Initializable {
 
     @FXML
     void cancelar(ActionEvent event) {
-
+    	((Stage)((Node)event.getSource()).getScene().getWindow()).close();
     }
 
     @FXML

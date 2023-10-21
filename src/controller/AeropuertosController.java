@@ -2,9 +2,11 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import dao.DAOAeropuertos;
+import dao.DAOAviones;
 import enums.TipoAeropuerto;
 import excepciones.AeropuertosException;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -42,6 +44,9 @@ public class AeropuertosController implements Initializable {
 
     @FXML
     private MenuItem miEditarAeropuerto;
+    
+    @FXML
+    private MenuItem miBorrarAeropuerto;
 
     @FXML
     private MenuItem miEditarAvion;
@@ -110,6 +115,26 @@ public class AeropuertosController implements Initializable {
     		abrirEditor(seleccionado);
     	}
     }
+    
+    @FXML
+    void borrarAeropuerto(ActionEvent event) {
+    	Aeropuerto seleccionado = tvAeropuertos.getSelectionModel().getSelectedItem();
+    	if (seleccionado != null) {    		
+    		Alert alert = new Alert(AlertType.CONFIRMATION, "¿Desea borrar el aeropuerto " + seleccionado.getNombre() + "?", ButtonType.OK, ButtonType.CANCEL);
+    		alert.showAndWait();
+    		ButtonType eleccion = alert.getResult();
+    		if (ButtonType.OK.equals(eleccion)) {
+    			try {
+					DAOAeropuertos.borrarAeropuerto(seleccionado);
+					filtrarFilas();
+				} catch (SQLException | AeropuertosException e) {
+		    		Alert err = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
+		    		err.show();
+					e.printStackTrace();
+				}
+    		}
+    	}
+    }
 
     @FXML
     void editarAvion(ActionEvent event) {
@@ -122,7 +147,7 @@ public class AeropuertosController implements Initializable {
     	try {    		
     		Aeropuerto seleccionado = tvAeropuertos.getSelectionModel().getSelectedItem();
     		if (seleccionado != null) {    		
-    			Alert alert = new Alert(AlertType.INFORMATION, Utilidades.infoAeropuerto(seleccionado, DAOAeropuertos.getAviones(seleccionado)), ButtonType.OK);
+    			Alert alert = new Alert(AlertType.INFORMATION, Utilidades.infoAeropuerto(seleccionado, DAOAviones.getAviones(seleccionado)), ButtonType.OK);
     			alert.showAndWait();
     		}
     	} catch (AeropuertosException e) {
