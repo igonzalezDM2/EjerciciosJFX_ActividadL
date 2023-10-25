@@ -28,7 +28,7 @@ public class DAOAviones extends DAOBase {
 	 */
 	public static List<Avion> getAviones(Aeropuerto aeropuerto) throws AeropuertosException {
 		try(Connection con = getConexion()) {
-			StringBuilder sb = new StringBuilder("select aeropuertos.id as id, "
+			StringBuilder sb = new StringBuilder("select "
 					+ "aviones.id as id, "
 					+ "aviones.modelo as modelo, "
 					+ "aviones.numero_asientos as numero_asientos, "
@@ -115,7 +115,6 @@ public class DAOAviones extends DAOBase {
 			
 			String sqlDireccion = "UPDATE aviones SET modelo = ?, numero_asientos = ?, velocidad_maxima = ?, activado = ? , id_aeropuerto = ? WHERE id = ?";
 			Connection con = null;
-			int idAvion = 0;
 			try {
 				con = getConexion();
 				con.setAutoCommit(false);
@@ -129,10 +128,6 @@ public class DAOAviones extends DAOBase {
 					ps.setInt(6, avion.getId());
 					
 					ps.executeUpdate();
-					ResultSet rs = ps.getGeneratedKeys();
-					if (rs.next()) {
-						idAvion = rs.getInt(1);
-					}
 				}
 				
 				con.commit();
@@ -145,9 +140,6 @@ public class DAOAviones extends DAOBase {
 			} finally {
 				con.close();
 			}
-			
-			//INSERTAR LOS IDS GENERADOS EN EL OBJETO PASADO COMO ARGUMENTO
-			avion.setId(idAvion);
 			
 		} else {			
 			throw new AeropuertosException("Los datos introducidos están incompletos");

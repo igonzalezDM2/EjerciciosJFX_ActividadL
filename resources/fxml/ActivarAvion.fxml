@@ -49,7 +49,7 @@
                   <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#cancelar" text="Cancelar" />
                </children>
             </FlowPane>
-            <ComboBox fx:id="cbAviones" prefHeight="25.0" prefWidth="465.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="cbAviones" onAction="#cambiarActivado" prefHeight="25.0" prefWidth="465.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Aviones:" GridPane.rowIndex="1" />
          </children>
       </GridPane>
