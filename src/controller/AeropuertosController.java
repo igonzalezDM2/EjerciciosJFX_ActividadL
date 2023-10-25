@@ -146,7 +146,7 @@ public class AeropuertosController implements Initializable {
     
     @FXML
     void borrarAvion(ActionEvent event) {
-
+    	abrirBorrarAvion();
     }
     
 
@@ -156,6 +156,7 @@ public class AeropuertosController implements Initializable {
     		Aeropuerto seleccionado = tvAeropuertos.getSelectionModel().getSelectedItem();
     		if (seleccionado != null) {    		
     			Alert alert = new Alert(AlertType.INFORMATION, Utilidades.infoAeropuerto(seleccionado, DAOAviones.getAviones(seleccionado)), ButtonType.OK);
+    			alert.setTitle("Información");
     			alert.showAndWait();
     		}
     	} catch (AeropuertosException e) {
@@ -234,6 +235,11 @@ public class AeropuertosController implements Initializable {
 			.setControladorPrincipal(this);
 			
 			Stage stage = new Stage();
+			if (seleccionado != null) {
+				stage.setTitle("AEROPUERTOS - EDITAR AEROPUERTO");
+			} else {
+				stage.setTitle("AEROPUERTOS - AÑADIR AEROPUERTO");
+			}
 			stage.initModality(Modality.WINDOW_MODAL);
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
@@ -254,6 +260,7 @@ public class AeropuertosController implements Initializable {
 			.setControladorPrincipal(this);
 			
 			Stage stage = new Stage();
+			stage.setTitle("AVIONES - AÑADIR AVIÓN");
 			stage.initModality(Modality.WINDOW_MODAL);
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
@@ -274,6 +281,28 @@ public class AeropuertosController implements Initializable {
 			.setControladorPrincipal(this);
 			
 			Stage stage = new Stage();
+			stage.setTitle("AVIONES - ACTIVAR/DESACTIVAR AVIÓN");
+			stage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.showAndWait();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void abrirBorrarAvion() {
+		FlowPane root;
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/BorrarAvion.fxml"));
+			root = loader.load();
+			BorrarAvionController controladorBorrarAvion= loader.getController();
+			
+			controladorBorrarAvion
+			.setControladorPrincipal(this);
+			
+			Stage stage = new Stage();
+			stage.setTitle("AVIONES - LOGIN");
 			stage.initModality(Modality.WINDOW_MODAL);
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
