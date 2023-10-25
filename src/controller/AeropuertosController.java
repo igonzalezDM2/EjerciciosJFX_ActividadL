@@ -17,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
@@ -24,7 +25,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
@@ -49,7 +49,10 @@ public class AeropuertosController implements Initializable {
     private MenuItem miBorrarAeropuerto;
 
     @FXML
-    private MenuItem miEditarAvion;
+    private MenuItem miActivarAvion;
+    
+    @FXML
+    private MenuItem miBorrarAvion;
     
     @FXML
     private MenuItem miInfoAeropuertos;
@@ -100,7 +103,7 @@ public class AeropuertosController implements Initializable {
 
     @FXML
     void anadirAvion(ActionEvent event) {
-
+    	abrirEditorAvion();
     }
 
     @FXML
@@ -137,7 +140,12 @@ public class AeropuertosController implements Initializable {
     }
 
     @FXML
-    void editarAvion(ActionEvent event) {
+    void activarAvion(ActionEvent event) {
+    	abrirActivadorAvion();
+    }
+    
+    @FXML
+    void borrarAvion(ActionEvent event) {
 
     }
     
@@ -209,6 +217,7 @@ public class AeropuertosController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+	
 	private void abrirEditor() {
 		abrirEditor(null);
 	}
@@ -222,6 +231,46 @@ public class AeropuertosController implements Initializable {
 			controladorAnadirAeropuerto
 			.setTablaAeropuertos(tvAeropuertos)
 			.setSeleccionado(seleccionado)
+			.setControladorPrincipal(this);
+			
+			Stage stage = new Stage();
+			stage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.showAndWait();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void abrirEditorAvion() {
+		FlowPane root;
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AnadirAvion.fxml"));
+			root = loader.load();
+			AnadirAvionController controladorAnadirAvion= loader.getController();
+			
+			controladorAnadirAvion
+			.setControladorPrincipal(this);
+			
+			Stage stage = new Stage();
+			stage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.showAndWait();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void abrirActivadorAvion() {
+		FlowPane root;
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ActivarAvion.fxml"));
+			root = loader.load();
+			ActivarAvionController controladorActivarAvion= loader.getController();
+			
+			controladorActivarAvion
 			.setControladorPrincipal(this);
 			
 			Stage stage = new Stage();

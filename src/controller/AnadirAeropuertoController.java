@@ -101,7 +101,7 @@ public class AnadirAeropuertoController implements Initializable {
 			} else {
 				DAOAeropuertos.anadirAeropuerto(construirAeropuerto());
 			}
-			//TODO: AVISAR DE QUE SE HA INSERTADO Y CERRAR LA MODAL
+			//AVISAR DE QUE SE HA INSERTADO Y CERRAR LA MODAL
 			Alert alert = new Alert(AlertType.INFORMATION, "El aeropuerto fue insertado", ButtonType.OK);
 			alert.show();
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -198,31 +198,6 @@ public class AnadirAeropuertoController implements Initializable {
 	}
 	
 	
-	private void checkCampoDouble(TextField tf) throws AeropuertosException {
-		String strNum = tf.getText();
-		Pattern doublePattern = Pattern.compile("\\d+([\\.,]\\d+)?");
-		Matcher matcher = doublePattern.matcher(strNum);
-		if (!matcher.matches()) {
-			throw new AeropuertosException("El campo " + tf.getId() + " contiene un formato incorrecto o está vacío");
-		}
-	}
-	
-	private void checkCampoInt(TextField tf) throws AeropuertosException {
-		String strNum = tf.getText();
-		Pattern intPattern = Pattern.compile("\\d+");
-		Matcher matcher = intPattern.matcher(strNum);
-		if (!matcher.matches()) {
-			throw new AeropuertosException("El campo " + tf.getId() + " contiene un formato incorrecto o está vacío");
-		}
-	}
-	
-	private void checkCampoStrNotNull(TextField tf) throws AeropuertosException {
-		String str = tf.getText();
-		if (str == null || str.isBlank()) {
-			throw new AeropuertosException("El campo" + tf.getId() + " está vacío");
-		}
-	}
-	
 	private void rellenarEdicion() {
 		//PRÁCTICAMENTE TODOS LOS CAMPOS SON NOT NULL, POR LO QUE NO DEBERÍA SALTAR NINGUNA EXCEPCIÓN
 		if (seleccionado != null) {
@@ -242,6 +217,31 @@ public class AnadirAeropuertoController implements Initializable {
 				tfVariable1.setText(String.format("%.2f", seleccionado.getFinanciacion()));
 				tfVariable2.setText(Integer.toString(seleccionado.getNumTrabajadores()));
 			}
+		}
+	}
+	
+	public static void checkCampoDouble(TextField tf) throws AeropuertosException {
+		String strNum = tf.getText();
+		Pattern doublePattern = Pattern.compile("\\d+([\\.,]\\d+)?");
+		Matcher matcher = doublePattern.matcher(strNum);
+		if (!matcher.matches()) {
+			throw new AeropuertosException("El campo " + tf.getId() + " contiene un formato incorrecto o está vacío");
+		}
+	}
+
+	public static void checkCampoInt(TextField tf) throws AeropuertosException {
+		String strNum = tf.getText();
+		Pattern intPattern = Pattern.compile("\\d+");
+		Matcher matcher = intPattern.matcher(strNum);
+		if (!matcher.matches()) {
+			throw new AeropuertosException("El campo " + tf.getId() + " contiene un formato incorrecto o está vacío");
+		}
+	}
+
+	public static void checkCampoStrNotNull(TextField tf) throws AeropuertosException {
+		String str = tf.getText();
+		if (str == null || str.isBlank()) {
+			throw new AeropuertosException("El campo" + tf.getId() + " está vacío");
 		}
 	}
 

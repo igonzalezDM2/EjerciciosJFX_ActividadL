@@ -50,6 +50,11 @@ public class Avion {
 		this.aeropuerto = aeropuerto;
 		return this;
 	}
+	@Override
+	public String toString() {
+		return modelo;
+	}
+	
 	
 	
 }

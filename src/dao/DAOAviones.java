@@ -182,6 +182,26 @@ public class DAOAviones extends DAOBase {
 		
 	}
 	
+	public static void checkExiste(Avion avion) throws AeropuertosException {
+		Aeropuerto aeropuerto = avion.getAeropuerto();
+		String modelo = avion.getModelo();
+		if (aeropuerto != null && aeropuerto.getId() > 0 && modelo != null && !modelo.isBlank()) {
+			try (Connection con = getConexion()) {
+				String sql = "SELECT id FROM aviones WHERE modelo = ? AND id_aeropuerto = ?";
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setString(1, modelo);
+				ps.setInt(2, aeropuerto.getId());
+				ResultSet rs = ps.executeQuery();
+				if (rs.first()) {
+					throw new SQLException("Ya existe un avión del mismo modelo con el mismo aeropuerto");
+				}
+				
+			} catch (SQLException e) {
+				throw new AeropuertosException(e);
+			}
+		}
+	}
+	
 	
 	
 }

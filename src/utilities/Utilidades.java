@@ -3,9 +3,12 @@ package utilities;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import enums.TipoAeropuerto;
 import excepciones.AeropuertosException;
+import javafx.scene.control.TextField;
 import model.Aeropuerto;
 import model.Avion;
 import model.Direccion;

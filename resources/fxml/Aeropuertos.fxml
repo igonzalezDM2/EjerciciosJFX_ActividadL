@@ -32,7 +32,8 @@
           <Menu mnemonicParsing="false" text="Aviones">
             <items>
               <MenuItem fx:id="miAnadirAvion" mnemonicParsing="false" onAction="#anadirAvion" text="Añadir" />
-                  <MenuItem fx:id="miEditarAvion" mnemonicParsing="false" onAction="#editarAvion" text="Editar" />
+                  <MenuItem fx:id="miActivarAvion" mnemonicParsing="false" onAction="#activarAvion" text="Activar/Desactivar" />
+                  <MenuItem fx:id="miBorrarAvion" mnemonicParsing="false" onAction="#borrarAvion" text="Borrar" />
             </items>
           </Menu>
         </menus>

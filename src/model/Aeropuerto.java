@@ -109,4 +109,9 @@ public class Aeropuerto {
 		return this;
 	}
 	
+	@Override
+	public String toString() {
+		return nombre;
+	}
+	
 }
