@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import dao.DAOAeropuertos;
@@ -31,6 +32,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Aeropuerto;
+import model.Avion;
 import model.Direccion;
 import utilities.Utilidades;
 
@@ -80,6 +82,12 @@ public class AeropuertosController implements Initializable {
 
     @FXML
     private TableColumn<Aeropuerto, Integer> tcNumSocios;
+    
+    @FXML
+    private TableColumn<Aeropuerto, Double> tcFinanciacion;
+    
+    @FXML
+    private TableColumn<Aeropuerto, Integer> tcNumTrabajadores;
 
     @FXML
     private TableColumn<Aeropuerto, Integer> tcNumero;
@@ -128,6 +136,17 @@ public class AeropuertosController implements Initializable {
     		ButtonType eleccion = alert.getResult();
     		if (ButtonType.OK.equals(eleccion)) {
     			try {
+    				//PRIMERO HAY QUE BORRAR LOS AVIONES ASOCIADOS PARA NO VIOLAR LA CONSTRAINT
+    				List<Avion> avionesABorrar = DAOAviones.getAviones(seleccionado);
+    				avionesABorrar.forEach(avion -> {
+						try {
+							DAOAviones.borrarAvion(avion);
+						} catch (SQLException | AeropuertosException e) {
+				    		Alert err = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
+				    		err.show();
+							e.printStackTrace();
+						}
+					});
 					DAOAeropuertos.borrarAeropuerto(seleccionado);
 					filtrarFilas();
 				} catch (SQLException | AeropuertosException e) {
@@ -172,6 +191,8 @@ public class AeropuertosController implements Initializable {
 		tcId.setCellValueFactory(new PropertyValueFactory<Aeropuerto, Integer>("id"));
 		tcNombre.setCellValueFactory(new PropertyValueFactory<Aeropuerto, String>("nombre"));
 		tcNumSocios.setCellValueFactory(new PropertyValueFactory<Aeropuerto, Integer>("numeroSocios"));
+		tcFinanciacion.setCellValueFactory(new PropertyValueFactory<Aeropuerto, Double>("financiacion"));
+		tcNumTrabajadores.setCellValueFactory(new PropertyValueFactory<Aeropuerto, Integer>("numTrabajadores"));
 		
 		//PARA ESTOS CAMPOS HAY QUE ACCEDER A LA PROPIEDAD DIRECCIÓN, POR LO QUE USO CALLBACKS
 		tcCiudad.setCellValueFactory(param -> {
@@ -211,6 +232,17 @@ public class AeropuertosController implements Initializable {
 		String busqueda = tfNombre.getText() != null ? tfNombre.getText().toLowerCase() : "";
 		tvAeropuertos.getItems().clear();
 		TipoAeropuerto tipo = rbPrivados == tipoAeropuerto.getSelectedToggle() ? TipoAeropuerto.PRIVADO : TipoAeropuerto.PUBLICO;
+		
+		if (TipoAeropuerto.PUBLICO.equals(tipo)) {
+			tcNumSocios.setVisible(false);
+			tcFinanciacion.setVisible(true);
+			tcNumTrabajadores.setVisible(true);
+		} else {
+			tcNumSocios.setVisible(true);
+			tcFinanciacion.setVisible(false);
+			tcNumTrabajadores.setVisible(false);			
+		}
+		
 		try {
 			tvAeropuertos.getItems().addAll(DAOAeropuertos.getAeropuertos(tipo, busqueda));
 			tvAeropuertos.refresh();

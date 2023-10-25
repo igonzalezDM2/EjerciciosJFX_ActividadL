@@ -79,13 +79,15 @@
             <TableView fx:id="tvAeropuertos" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
               <columns>
                 <TableColumn fx:id="tcId" prefWidth="62.0" text="ID" />
-                <TableColumn fx:id="tcNombre" prefWidth="158.0" text="Nombre" />
-                  <TableColumn fx:id="tcPais" prefWidth="103.0" text="Pais" />
-                  <TableColumn fx:id="tcCiudad" prefWidth="140.0" text="Ciudad" />
-                  <TableColumn fx:id="tcNumero" prefWidth="47.0" text="Número" />
-                  <TableColumn fx:id="tcAno" prefWidth="68.0" text="Año" />
-                  <TableColumn fx:id="tcCapacidad" prefWidth="147.0" text="Capacidad" />
-                  <TableColumn fx:id="tcNumSocios" prefWidth="77.0" text="NºSocios" />
+                <TableColumn fx:id="tcNombre" prefWidth="130.00049591064453" text="Nombre" />
+                  <TableColumn fx:id="tcPais" prefWidth="108.1822509765625" text="Pais" />
+                  <TableColumn fx:id="tcCiudad" prefWidth="128.1822509765625" text="Ciudad" />
+                  <TableColumn fx:id="tcNumero" prefWidth="60.00018310546875" text="Número" />
+                  <TableColumn fx:id="tcAno" prefWidth="95.45486450195312" text="Año" />
+                  <TableColumn fx:id="tcCapacidad" prefWidth="77.2730712890625" text="Capacidad" />
+                  <TableColumn fx:id="tcNumSocios" prefWidth="145.455078125" text="NºSocios" visible="false" />
+                  <TableColumn fx:id="tcFinanciacion" prefWidth="76.36376953125" text="Financiacion" />
+                  <TableColumn fx:id="tcNumTrabajadores" prefWidth="61.818445531735506" text="NºTrabajadores" />
               </columns>
             </TableView>
          </children>
